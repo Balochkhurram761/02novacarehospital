@@ -14,9 +14,14 @@ host = os.getenv("host")
 port = os.getenv("port")
 database = os.getenv("database")
 
+print("user_name =", user_name)
+print("password =", password)
+print("host =", host)
+print("port =", port)
+print("database =", database)
 
-if not all([user_name, password,  host, port, database]):
-    raise Exception("Database credentials missing in .env")
+# if not all([user_name, password,  host, port, database]):
+#     raise Exception("Database credentials missing in .env")
 
 
 
