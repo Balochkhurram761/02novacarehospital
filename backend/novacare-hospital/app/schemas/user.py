@@ -8,6 +8,7 @@ class create_user(BaseModel):
     password:str
     address:str
     role:str="admin"
+    is_approved:bool="false"
 
     class Config:
         form_attributes=True
@@ -24,6 +25,7 @@ class get_user(BaseModel):
     email: Optional[str] = None
     address: Optional[str] = None
     role: Optional[str] = None
+    is_approved:bool="false"
 
     class Config:
         form_attributes=True

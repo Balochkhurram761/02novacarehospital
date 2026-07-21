@@ -15,6 +15,8 @@ def register_user(user: create_user, db: Session):
             email=user.email,
             password=hashed_password,
             address=user.address,
+            role=user.role,
+        
         )
 
         db.add(new_user)
@@ -30,51 +32,41 @@ def register_user(user: create_user, db: Session):
         )
     
 def login_user(user: Login_user, db: Session):
-    try:
-        db_users = db.query(User).filter(User.email == user.email).first()
+    db_user = db.query(User).filter(User.email == user.email).first()
 
-        if not db_users:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="User not found"
-            )
-
-        compare_password = compare_hash(
-            user.password,
-            db_users.password
-        )
-
-        if not compare_password:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid email or password"
-            )
-        if db_users.role != "admin":
-            raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only Admin can login"
-        )
-        token = create_token(
-            {
-                "sub": db_users.email,
-                "id":db_users.id,
-                "role": db_users.role
-            }
-        )
-
-        return {
-            "message": "Login successful",
-            "access_token": token,
-            "token_type": "bearer"
-        }
-
-    except Exception as e:
-        
+    if not db_user:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(e)
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
         )
-    
+
+    if not compare_hash(user.password, db_user.password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password"
+        )
+
+    # Admin ke ilawa sab approve hone chahiye
+    if db_user.role != "admin" and not db_user.is_approved:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Your account is waiting for admin approval."
+        )
+
+    token = create_token(
+        {
+            "sub": db_user.email,
+            "id": db_user.id,
+            "role": db_user.role,
+            "approved": db_user.is_approved
+        }
+    )
+
+    return {
+        "message": "Login successful",
+        "access_token": token,
+        "token_type": "bearer"
+    }
 
 
 def user_get(db: Session):
