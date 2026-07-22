@@ -8,22 +8,18 @@ from app.schemas.appointment import AppointmentCreate, AppointmentUpdate
 from sqlalchemy.orm import joinedload
 
 
-# ==========================
-# Create Appointment
-# ==========================
+
 def create_appointment(
     data: AppointmentCreate,
     current_user: dict,
     db: Session
 ):
-    # Only Patient can book appointment
     if current_user["role"] != "patient":
         raise HTTPException(
             status_code=403,
             detail="Only patients can book appointments"
         )
 
-    # Check Patient Profile
     patient = db.query(Patient).filter(
         Patient.user_id == current_user["id"]
     ).first()
@@ -65,9 +61,6 @@ def create_appointment(
     }
 
 
-# ==========================
-# Get All Appointments
-# ==========================
 def get_all_appointments(db: Session):
 
     appointments = db.query(Appointment)\
@@ -112,9 +105,7 @@ def get_all_appointments(db: Session):
     return result
 
 
-# ==========================
-# Update Appointment Status
-# ==========================
+
 def update_appointment(
     id: int,
     data: AppointmentUpdate,
@@ -142,9 +133,7 @@ def update_appointment(
     }
 
 
-# ==========================
-# Delete Appointment
-# ==========================
+
 def delete_appointment(
     id: int,
     db: Session

@@ -16,7 +16,6 @@ from app.utils.role_based import role_required
 router = APIRouter()
 
 
-# Create Doctor Profile
 @router.post("/profile")
 def create(
     doctor: DoctorCreate,
@@ -26,7 +25,6 @@ def create(
     return create_doctor(doctor, current_user, db)
 
 
-# Get Logged In Doctor Profile
 @router.get("/profile")
 def get(
     current_user=Depends(role_required(["doctor"])),

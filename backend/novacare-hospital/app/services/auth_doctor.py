@@ -78,15 +78,10 @@ def get_doctor(
     return {
 
         "id":doctor.id,
-        # User Table Data
         "name":doctor.user.name,
         "email":doctor.user.email,
         "address":doctor.user.address,
-
-        # Doctor Table Data
-
         "specialization":doctor.specialization,
-
         "experience":doctor.experience,
 
         "qualification":doctor.qualification

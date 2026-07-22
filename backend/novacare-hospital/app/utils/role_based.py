@@ -12,7 +12,7 @@ def role_required(allowed_roles: list):
                 detail="Access Denied"
             )
 
-        # Admin ko approval ki zarurat nahi
+
         if current_user["role"] != "admin" and not current_user["approved"]:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,

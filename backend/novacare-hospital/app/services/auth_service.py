@@ -45,8 +45,7 @@ def login_user(user: Login_user, db: Session):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password"
         )
-
-    # Admin ke ilawa sab approve hone chahiye
+    
     if db_user.role != "admin" and not db_user.is_approved:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -86,7 +85,6 @@ def user_get(db: Session):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e)
         )
-from fastapi import HTTPException, status
 
 def get_singleuser(id: int, db: Session):
     try:
@@ -120,7 +118,6 @@ def user_update(id: int, user: get_user, db: Session):
                 detail="User not found"
             )
 
-        # Sirf wahi field update hogi jo request me aayegi
         if user.name is not None:
             user_put.name = user.name
 
